@@ -2,10 +2,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-// app.get('/', function(req, res){
-//   res.send('<h1>Hello world</h1>');
-// });
-
+//serve up static pages
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/static/game.html');
 });
@@ -26,31 +23,29 @@ http.listen(80, function(){
   console.log('listening on *:80');
 });
 
+//handle websocket connections
 io.on('connection', function(socket){
+  console.log('a user connected');
+
+  //client requests a room: 
   socket.on('getroom', function(msg){
+    //generate a room code
     room = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 4);
+    //place user in that room
     socket.join(room);
     console.log("sending "+room)
-    // socket.broadcast.to(room).emit('room',room);
+    //send the room code back to the client
     socket.emit('room',room);
   });
 
-  console.log('a user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
-  socket.on('fire', function(msg){
-    console.log(socket.rooms);
-    console.log(msg);
-    socket.broadcast.to(msg).emit('fire','');
-  });
-  socket.on('test', function(msg){
-    console.log(socket.rooms);
 
-    // io.emit('fire','');
-  });
-  // socket.on('room', function(room) {
-  //   socket.join(room);
-  // });
-  
+  //handle incoming fire event
+  //the event contains the room code
+  socket.on('fire', function(room){
+    //send the fire event to the room specified
+    socket.broadcast.to(room).emit('fire','');
+  }); 
 });
