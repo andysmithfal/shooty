@@ -38,8 +38,7 @@
         return false;
       });
       $('#go').click(function(){
-          room = $('#roominput').val();
-          console.log(room);
+          room = $('#roominput').val().toLowerCase();
           $('#form').hide();
           $('#fire').show();
       });
