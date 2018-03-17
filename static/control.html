@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      #fire {
+          width: 300px;
+          height: 300px;
+          background-color: red;
+          border-radius: 300px;
+          text-align: center;
+          display: none;
+      }
+      #fire p {
+          line-height: 300px;
+          color: white;
+          font-family: Helvetica, sans-serif;
+          font-size: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="form">
+            <input type="text" placeholder="Room Code" id="roominput"></input>
+            <button id="go">Go</button>
+    </div>
+    <div id="fire"><p>Fire!</p></div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+      room = "";
+    $(function () {
+      var socket = io();
+      $('#fire').on('touchstart', function(){
+        socket.emit('fire', room);
+        return false;
+      });
+      $('#go').click(function(){
+          room = $('#roominput').val();
+          console.log(room);
+          $('#form').hide();
+          $('#fire').show();
+      });
+    });
+  </script>  
+</html>
